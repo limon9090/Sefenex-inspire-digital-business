@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>X-Eren Play v3</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Telegram WebApp Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <style>
+        :root {
+            --font-main: 'Poppins', 'Hind Siliguri', sans-serif;
+            --primary-sapphire: #0A2463;
+            --accent-teal: #3D99A1;
+            --accent-gold: #FFC947;
+            --accent-blush: #E49AB0;
+            --accent-red: #FF4D4D;
+            --bg-gradient: linear-gradient(180deg, #F9FAFB 0%, #F3F5F9 100%);
+            --card-bg: #FFFFFF;
+            --text-dark: #101828;
+            --text-light: #667085;
+            --border-color: #EAECF0;
+            --card-shadow: 0 15px 35px -10px rgba(10, 36, 99, 0.15);
+            --button-shadow: 0 8px 15px rgba(61, 153, 161, 0.3);
+            --glow-effect: 0 0 40px rgba(61, 153, 161, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+        
+        body { background-color: #F9FAFB; color: var(--text-dark); overflow-x: hidden; }
+        .app-container { width: 100%; max-width: 480px; margin: 0 auto; background: var(--bg-gradient); }
+        
+        /* View Transitions */
+        .view { display: none; min-height: 100vh; animation: fadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* General Header */
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; background: rgba(249, 250, 251, 0.8); backdrop-filter: blur(10px); z-index: 10; }
+        .header-title { font-size: 1.5rem; font-weight: 700; color: var(--primary-sapphire); }
+        .header-btn { background: var(--card-bg); border: 1px solid var(--border-color); cursor: pointer; color: var(--text-dark); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        .content-area { padding: 0 20px 100px 20px; }
+        .card { background: var(--card-bg); border-radius: 24px; padding: 25px; margin-bottom: 25px; box-shadow: var(--card-shadow); transition: transform 0.3s, box-shadow 0.3s; }
+
+        /* Main View: Wallet Card */
+        .wallet-card { background: linear-gradient(135deg, var(--primary-sapphire) 0%, var(--accent-teal) 100%); color: white; padding: 30px; text-align: center; animation: pulse 2.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: var(--card-shadow); } 50% { box-shadow: var(--glow-effect); } 100% { box-shadow: var(--card-shadow); } }
+        .wallet-card .label { font-size: 1rem; font-weight: 500; opacity: 0.8; margin-bottom: 5px; }
+        .wallet-card .balance { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+        .wallet-card .balance-icon { font-size: 1.5rem; margin-right: 10px; vertical-align: middle; color: var(--accent-gold); }
+
+        /* Main View: Ads Section */
+        .ad-item { padding: 20px 0; border-bottom: 1px solid var(--border-color); }
+        .ad-item:last-child { border-bottom: none; padding-bottom: 5px; }
+        .ad-item:first-child { padding-top: 5px; }
+        .ad-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .ad-title { font-size: 1.2rem; font-weight: 600; }
+        .ad-reward { font-size: 0.9rem; font-weight: 600; color: var(--primary-sapphire); background: var(--accent-gold); padding: 4px 12px; border-radius: 20px; }
+        .ad-details { color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px; }
+        .progress-bar-wrapper { width: 100%; height: 8px; background-color: #F2F4F7; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold)); border-radius: 10px; transition: width 0.5s ease-out; }
+        .ad-actions { display: flex; gap: 10px; }
+        .ad-btn { flex-grow: 1; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 12px; border: none; cursor: pointer; transition: all 0.2s ease; }
+        .view-ad-btn { background: var(--accent-teal); color: white; box-shadow: var(--button-shadow); }
+        .view-ad-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(61, 153, 161, 0.4); }
+        .view-ad-btn:disabled { background: #D0D5DD; color: var(--text-light); box-shadow: none; cursor: not-allowed; }
+        .auto-ad-btn { background: var(--card-bg); color: var(--accent-teal); border: 2px solid var(--accent-teal); }
+        .auto-ad-btn.auto-ad-active { background: var(--accent-red); color: white; border-color: var(--accent-red); }
+        .ad-cooldown-timer { font-weight: 600; text-align: center; color: var(--accent-red); background-color: #fff2f2; padding: 12px; border-radius: 12px; }
+
+        /* Footer */
+        .app-footer { text-align: center; padding: 20px; }
+        .developer-credit a { color: var(--text-light); text-decoration: none; font-weight: 500; }
+
+        /* Menu View & Support/Developer Pages */
+        .profile-header { text-align: center; padding: 30px 20px; }
+        .profile-header .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .profile-header .name { font-size: 1.5rem; font-weight: 700; color: var(--primary-sapphire); }
+        .profile-header .user-id { font-size: 1rem; color: var(--text-light); }
+        
+        .list-options { display: flex; flex-direction: column; gap: 15px; }
+        .list-button { display: flex; align-items: center; background: var(--card-bg); padding: 20px; border-radius: 16px; text-decoration: none; color: var(--text-dark); font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+        .list-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(10, 36, 99, 0.1); }
+        .list-button i { font-size: 1.5rem; color: var(--accent-teal); margin-right: 20px; width: 30px; text-align: center; }
+
+        /* Developer Page Specific */
+        .developer-card { text-align: center; padding: 40px 20px; background: linear-gradient(160deg, var(--card-bg) 0%, #f7f9fc 100%); }
+        .developer-card .avatar { width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--accent-gold); margin-bottom: 20px; }
+        .developer-card .name { font-size: 1.8rem; font-weight: 700; color: var(--primary-sapphire); }
+        .developer-card .title { font-size: 1rem; color: var(--accent-teal); font-weight: 600; margin-bottom: 20px; }
+        .developer-card .bio { color: var(--text-light); line-height: 1.6; margin-bottom: 30px; }
+        .contact-btn { display: inline-flex; background: var(--accent-teal); color: white; padding: 14px 30px; border-radius: 12px; text-decoration: none; font-weight: 600; box-shadow: var(--button-shadow); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 36, 99, 0.6); z-index: 1010; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; }
+        .modal-close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-light); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-light); }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 1rem; background-color: var(--bg-color); }
+        .submit-btn { width: 100%; padding: 16px; font-size: 1.1em; font-weight: 600; border: none; border-radius: 14px; cursor: pointer; background: var(--accent-teal); color: white; box-shadow: var(--button-shadow); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Main Dashboard View -->
+        <div id="mainView" class="view active">
+            <header class="app-header">
+                <div class="header-title">X-Eren Play</div>
+                <button data-view="menuView" class="header-btn view-btn"><i class="bi bi-person-circle"></i></button>
+            </header>
+            <main class="content-area">
+                <div class="card wallet-card">
+                    <div class="label">Your Balance</div>
+                    <div class="balance"><i class="bi bi-gem balance-icon"></i><span id="balanceDisplay">0</span></div>
+                </div>
+
+                <div class="card">
+                    <div class="ad-item">
+                        <div class="ad-header"><div class="ad-title">Giga Ad</div><div class="ad-reward">+50 Coins</div></div>
+                        <p class="ad-details">দেখা হয়েছে: <strong id="ad1CountDisplay">0/500</strong></p>
+                        <div class="progress-bar-wrapper"><div id="ad1Progress" class="progress-bar-fill"></div></div>
+                        <div id="ad1CooldownTimer" class="ad-cooldown-timer" style="display: none;"></div>
+                        <div class="ad-actions">
+                            <button id="viewAd1Btn" class="ad-btn view-ad-btn"><i class="bi bi-play-circle-fill"></i> দেখুন</button>
+                            <button id="autoAd1Btn" class="ad-btn auto-ad-btn"><i class="bi bi-robot"></i> অটো</button>
+                        </div>
+                    </div>
+                    <div class="ad-item">
+                        <div class="ad-header"><div class="ad-title">Adsterra Ad</div><div class="ad-reward">+300 Coins</div></div>
+                        <p class="ad-details">এই অ্যাডটি প্রতি ৩ ঘন্টায় একবার দেখা যাবে।</p>
+                        <div id="ad2CooldownTimer" class="ad-cooldown-timer" style="display: none;"></div>
+                        <div class="ad-actions"><button id="viewAd2Btn" class="ad-btn view-ad-btn" style="width: 100%;"><i class="bi bi-eye-fill"></i> দেখুন</button></div>
+                    </div>
+                    <div class="ad-item">
+                        <div class="ad-header"><div class="ad-title">Monetag Ad</div><div class="ad-reward">+100 Coins</div></div>
+                        <p class="ad-details">দেখা হয়েছে: <strong id="ad3CountDisplay">0/50</strong></p>
+                        <div class="progress-bar-wrapper"><div id="ad3Progress" class="progress-bar-fill"></div></div>
+                        <div id="ad3CooldownTimer" class="ad-cooldown-timer" style="display: none;"></div>
+                        <div class="ad-actions">
+                            <button id="viewAd3Btn" class="ad-btn view-ad-btn"><i class="bi bi-play-circle-fill"></i> দেখুন</button>
+                            <button id="autoAd3Btn" class="ad-btn auto-ad-btn"><i class="bi bi-robot"></i> অটো</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="app-footer">
+                <div class="developer-credit"><a href="#" data-view="developerView" class="view-btn">Developed by <strong>Hason Raja</strong></a></div>
+            </footer>
+        </div>
+
+        <!-- Menu/Profile View -->
+        <div id="menuView" class="view">
+            <header class="app-header">
+                <button data-view="mainView" class="header-btn view-btn"><i class="bi bi-arrow-left"></i></button>
+                <div class="header-title">প্রোফাইল</div>
+                <div style="width: 44px;"></div>
+            </header>
+            <main class="content-area">
+                <div class="profile-header">
+                    <img id="profilePic" src="https://i.ibb.co/Q8Q2d6T/avatar.png" alt="Avatar" class="avatar">
+                    <div id="profileName" class="name">Guest User</div>
+                    <div id="profileId" class="user-id">ID: N/A</div>
+                </div>
+                <div class="list-options">
+                    <button id="withdrawBtn" class="list-button"><i class="bi bi-wallet2"></i> টাকা উত্তোলন</button>
+                    <button data-view="supportView" class="list-button view-btn"><i class="bi bi-headset"></i> সাপোর্ট</button>
+                    <button data-view="developerView" class="list-button view-btn"><i class="bi bi-code-slash"></i> ডেভেলপার</button>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Support View -->
+        <div id="supportView" class="view">
+            <header class="app-header">
+                <button data-view="menuView" class="header-btn view-btn"><i class="bi bi-arrow-left"></i></button>
+                <div class="header-title">সাপোর্ট সেন্টার</div>
+                <div style="width: 44px;"></div>
+            </header>
+            <main class="content-area">
+                <div class="list-options">
+                    <a href="https://t.me/your_official_channel" target="_blank" class="list-button"><i class="bi bi-megaphone-fill"></i>অফিসিয়াল চ্যানেল</a>
+                    <a href="https://t.me/your_official_group" target="_blank" class="list-button"><i class="bi bi-people-fill"></i>অফিসিয়াল গ্রুপ</a>
+                    <a href="https://t.me/your_payment_channel" target="_blank" class="list-button"><i class="bi bi-cash-coin"></i>পেমেন্ট চ্যানেল</a>
+                    <a href="https://t.me/founder_of_ceo_fworker" target="_blank" class="list-button"><i class="bi bi-person-check-fill"></i>এডমিন</a>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Developer View -->
+        <div id="developerView" class="view">
+            <header class="app-header">
+                <button data-view="menuView" class="header-btn view-btn"><i class="bi bi-arrow-left"></i></button>
+                <div class="header-title">ডেভেলপার</div>
+                <div style="width: 44px;"></div>
+            </header>
+            <main class="content-area">
+                <div class="card developer-card">
+                    <img src="https://i.ibb.co/7xKkQhGf/1000089279.jpg" alt="Developer Avatar" class="avatar">
+                    <div class="name">Hason Raja</div>
+                    <div class="title">Official Bot Developer</div>
+                    <p class="bio">আপনি কি এইরকম একটি আর্নিং বট বানাতে চান? আপনার নিজের ব্র্যান্ড এবং নিয়ম অনুযায়ী সম্পূর্ণ কাস্টমাইজড একটি বট তৈরি করতে আজই আমার সাথে যোগাযোগ করুন।</p>
+                    <a href="https://t.me/fworker_official" target="_blank" class="contact-btn"><i class="bi bi-telegram"></i> যোগাযোগ করুন</a>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Withdrawal Modal -->
+    <div id="withdrawModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">টাকা উত্তোলন</h3>
+                <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <p style="color: var(--text-light); margin-bottom: 20px;">সর্বনিম্ন উত্তোলন <strong>50,000</strong> কয়েন = <strong>10 BDT</strong></p>
+            <form id="withdrawForm">
+                <div class="form-group"><label for="paymentMethod">পেমেন্ট মেথড</label><select id="paymentMethod" required><option value="bKash">বিকাশ</option><option value="Nagad">নগদ</option></select></div>
+                <div class="form-group"><label for="amount">কয়েনের পরিমাণ</label><input type="number" id="amount" placeholder="50000" required></div>
+                <div class="form-group"><label for="accountNumber">অ্যাকাউন্ট নম্বর</label><input type="text" id="accountNumber" placeholder="017xxxxxxxx" required></div>
+                <button type="submit" class="submit-btn">সাবমিট করুন</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Ad Scripts -->
+    <script src='//jagnaimsee.net/vignette.min.js' data-zone='9504240' data-sdk='show_9504240'></script>
+    <script src="https://ad.gigapub.tech/script?id=2086"></script>
+    
+    <script>
+        // --- CONFIGURATION ---
+        const CONFIG = {
+            TELEGRAM: {
+                BOT_TOKEN: 'YOUR_BOT_TOKEN', //  <-- আপনার টেলিগ্রাম বট টোকেন দিন
+                CHAT_ID: 'YOUR_PRIVATE_CHANNEL_ID' // <-- আপনার প্রাইভেট চ্যানেলের আইডি দিন (e.g., -100123456789)
+            },
+            AD1: {
+                LIMIT: 500, REWARD: 50, COOLDOWN_MINUTES: 1, COOLDOWN_TRIGGER_COUNT: 5,
+                AUTO_INTERVAL_MS: 2000, AD_FUNCTION: () => window.showGiga ? window.showGiga() : Promise.reject('GigaAd not loaded')
+            },
+            AD2: {
+                COOLDOWN_HOURS: 3, REWARD: 300, REWARD_DELAY_MINUTES: 1,
+                DIRECT_LINK: 'https://www.profitableratecpm.com/njf9v72pa?key=d54f51f2eb6b58bc76542f0996052ee9'
+            },
+            AD3: {
+                LIMIT: 50, REWARD: 100, COOLDOWN_MINUTES: 1, COOLDOWN_TRIGGER_COUNT: 5,
+                AUTO_INTERVAL_MS: 3000, AD_FUNCTION: () => window.show_9504240 ? (window.show_9504240(), Promise.resolve()) : Promise.reject('Monetag not loaded')
+            },
+            MIN_WITHDRAWAL: 50000,
+        };
+
+        let state = {
+            coins: 0,
+            ad1: { count: 0, cooldownUntil: null, lastReset: null, isAuto: false },
+            ad2: { cooldownUntil: null },
+            ad3: { count: 0, cooldownUntil: null, lastReset: null, isAuto: false },
+            user: { id: null, firstName: 'Guest', lastName: '', photoUrl: 'https://i.ibb.co/Q8Q2d6T/avatar.png' },
+            adInProgress: false,
+            withdrawals: []
+        };
+        const dom = {};
+        const timers = {};
+
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        function initApp() {
+            mapDomElements();
+            loadState();
+            initTelegramData();
+            attachEventListeners();
+            updateUI();
+            startAllCooldownTimers();
+        }
+        
+        function mapDomElements() {
+            const ids = [
+                'balanceDisplay', 'withdrawModal', 'withdrawBtn', 'closeModalBtn', 'withdrawForm',
+                'ad1CountDisplay', 'ad1Progress', 'ad1CooldownTimer', 'viewAd1Btn', 'autoAd1Btn',
+                'ad2CooldownTimer', 'viewAd2Btn', 'ad3CountDisplay', 'ad3Progress', 'ad3CooldownTimer', 'viewAd3Btn', 'autoAd3Btn',
+                'profilePic', 'profileName', 'profileId'
+            ];
+            ids.forEach(id => dom[id] = document.getElementById(id));
+            dom.viewBtns = document.querySelectorAll('.view-btn');
+        }
+
+        function getTodayDateString() { return new Date().toISOString().slice(0, 10); }
+
+        function loadState() {
+            try {
+                const savedState = JSON.parse(localStorage.getItem('XEREN_V3_STATE'));
+                if (savedState) {
+                    state = { ...state, ...savedState };
+                    const today = getTodayDateString();
+                    if (state.ad1.lastReset !== today) state.ad1 = { count: 0, cooldownUntil: null, lastReset: today, isAuto: false };
+                    if (state.ad3.lastReset !== today) state.ad3 = { count: 0, cooldownUntil: null, lastReset: today, isAuto: false };
+                }
+            } catch (e) { console.error("Could not load state:", e); }
+        }
+        function saveState() { localStorage.setItem('XEREN_V3_STATE', JSON.stringify(state)); }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+        
+        function updateUI() {
+            dom.balanceDisplay.textContent = Math.floor(state.coins).toLocaleString();
+            dom.profilePic.src = state.user.photoUrl;
+            dom.profileName.textContent = `${state.user.firstName} ${state.user.lastName}`.trim();
+            dom.profileId.textContent = `ID: ${state.user.id || 'N/A'}`;
+            
+            const updateAdUI = (key, config) => {
+                const adState = state[key];
+                dom[`${key}CountDisplay`].textContent = `${adState.count}/${config.LIMIT}`;
+                dom[`${key}Progress`].style.width = `${(adState.count / config.LIMIT) * 100}%`;
+                dom[`view${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].disabled = adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil);
+                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].disabled = adState.count >= config.LIMIT;
+            };
+            updateAdUI('ad1', CONFIG.AD1);
+            updateAdUI('ad3', CONFIG.AD3);
+            dom.viewAd2Btn.disabled = state.ad2.cooldownUntil && Date.now() < state.ad2.cooldownUntil;
+            saveState();
+        }
+
+        function initTelegramData() {
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const tg = window.Telegram.WebApp;
+                    tg.ready(); tg.expand();
+                    const user = tg.initDataUnsafe?.user;
+                    if (user && user.id && !state.user.id) {
+                        state.user = { id: user.id, firstName: user.first_name || 'Guest', lastName: user.last_name || '', photoUrl: user.photo_url || 'https://i.ibb.co/Q8Q2d6T/avatar.png' };
+                        updateUI();
+                    }
+                }
+            } catch (error) { console.error("TG WebApp init failed:", error); }
+        }
+
+        function formatTime(ms) {
+            if (ms <= 0) return "00:00:00";
+            let s = Math.floor(ms / 1000);
+            return `${Math.floor(s/3600).toString().padStart(2,'0')}:${Math.floor((s%3600)/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+        }
+
+        function startCooldownTimer(timerId, domElement, cooldownUntil) {
+            if (timers[timerId]) clearInterval(timers[timerId]);
+            if (!cooldownUntil || Date.now() > cooldownUntil) { domElement.style.display = 'none'; updateUI(); return; }
+            domElement.style.display = 'block';
+            const update = () => {
+                const timeLeft = cooldownUntil - Date.now();
+                if (timeLeft <= 0) { clearInterval(timers[timerId]); domElement.style.display = 'none'; updateUI(); } 
+                else { domElement.textContent = `অপেক্ষা করুন: ${formatTime(timeLeft)}`; }
+            };
+            update();
+            timers[timerId] = setInterval(update, 1000);
+        }
+        
+        function startAllCooldownTimers() {
+            startCooldownTimer('ad1', dom.ad1CooldownTimer, state.ad1.cooldownUntil);
+            startCooldownTimer('ad2', dom.ad2CooldownTimer, state.ad2.cooldownUntil);
+            startCooldownTimer('ad3', dom.ad3CooldownTimer, state.ad3.cooldownUntil);
+        }
+
+        async function handleAd(adKey) {
+            const config = CONFIG[adKey.toUpperCase()];
+            const adState = state[adKey];
+            if (adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil) || state.adInProgress) return;
+            state.adInProgress = true;
+            try {
+                await config.AD_FUNCTION();
+                state.coins += config.REWARD;
+                adState.count++;
+                if (adState.count % config.COOLDOWN_TRIGGER_COUNT === 0 && adState.count < config.LIMIT) {
+                    adState.cooldownUntil = Date.now() + config.COOLDOWN_MINUTES * 60 * 1000;
+                    startCooldownTimer(adKey, dom[`${adKey}CooldownTimer`], adState.cooldownUntil);
+                    if (adState.isAuto) toggleAutoAd(adKey);
+                }
+            } catch(e) { console.error(`${adKey} failed:`, e); alert(`${adKey} লোড হতে সমস্যা হয়েছে।`); } 
+            finally {
+                state.adInProgress = false; updateUI();
+                if (adState.isAuto && adState.count < config.LIMIT && !(adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
+                    setTimeout(() => handleAd(adKey), config.AUTO_INTERVAL_MS);
+                }
+            }
+        }
+        
+        function handleAd2() {
+            if ((state.ad2.cooldownUntil && Date.now() < state.ad2.cooldownUntil) || state.adInProgress) return;
+            state.adInProgress = true;
+            window.open(CONFIG.AD2.DIRECT_LINK, '_blank');
+            alert(`পুরস্কার পেতে ${CONFIG.AD2.REWARD_DELAY_MINUTES} মিনিট অপেক্ষা করুন।`);
+            setTimeout(() => {
+                state.coins += CONFIG.AD2.REWARD;
+                state.ad2.cooldownUntil = Date.now() + CONFIG.AD2.COOLDOWN_HOURS * 3600 * 1000;
+                state.adInProgress = false;
+                startCooldownTimer('ad2', dom.ad2CooldownTimer, state.ad2.cooldownUntil); updateUI();
+                alert(`অভিনন্দন! আপনি ${CONFIG.AD2.REWARD} কয়েন পেয়েছেন।`);
+            }, CONFIG.AD2.REWARD_DELAY_MINUTES * 60 * 1000);
+        }
+
+        function toggleAutoAd(adKey) {
+            const adState = state[adKey]; adState.isAuto = !adState.isAuto;
+            const btn = dom[`auto${adKey.charAt(0).toUpperCase() + adKey.slice(1)}Btn`];
+            if (adState.isAuto && adState.count < CONFIG[adKey.toUpperCase()].LIMIT) {
+                btn.classList.add('auto-ad-active'); btn.innerHTML = `<i class="bi bi-stop-circle-fill"></i> স্টপ`;
+                handleAd(adKey);
+            } else {
+                adState.isAuto = false; btn.classList.remove('auto-ad-active');
+                btn.innerHTML = `<i class="bi bi-robot"></i> অটো`;
+            }
+        }
+
+        async function sendToTelegram(message) {
+            const { BOT_TOKEN, CHAT_ID } = CONFIG.TELEGRAM;
+            if (!BOT_TOKEN || !CHAT_ID || BOT_TOKEN === 'YOUR_BOT_TOKEN') {
+                console.warn("Telegram bot token/chat ID not configured. Skipping message send.");
+                return true; // Pretend it was sent to allow UI to update
+            }
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'HTML' })
+                });
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error("Failed to send message to Telegram:", error);
+                return false;
+            }
+        }
+
+        async function handleWithdraw(e) {
+            e.preventDefault();
+            const form = e.target;
+            const amount = parseInt(form.amount.value);
+            const method = form.paymentMethod.value;
+            const number = form.accountNumber.value;
+
+            if (isNaN(amount) || amount < CONFIG.MIN_WITHDRAWAL) { alert(`সর্বনিম্ন ${CONFIG.MIN_WITHDRAWAL.toLocaleString()} কয়েন উত্তোলন করা যাবে।`); return; }
+            if (amount > state.coins) { alert("আপনার অ্যাকাউন্টে পর্যাপ্ত কয়েন নেই।"); return; }
+            
+            const withdrawalData = {
+                user: `${state.user.firstName} ${state.user.lastName} (ID: ${state.user.id})`,
+                amount: amount.toLocaleString(),
+                method,
+                number,
+                date: new Date().toLocaleString('bn-BD'),
+                remaining_coins: (state.coins - amount).toLocaleString()
+            };
+
+            const message = `
+<b>🔔 নতুন উইথড্র রিকোয়েস্ট! 🔔</b>
+--------------------------------------
+<b>🧑‍💻 ব্যবহারকারী:</b> ${withdrawalData.user}
+<b>💰 পরিমাণ:</b> ${withdrawalData.amount} Coin
+<b>💳 মাধ্যম:</b> ${withdrawalData.method}
+<b>#️⃣ নম্বর:</b> <code>${withdrawalData.number}</code>
+<b>🕰️ সময়:</b> ${withdrawalData.date}
+<b>📊 অবশিষ্ট ব্যালেন্স:</b> ${withdrawalData.remaining_coins} Coin
+--------------------------------------
+            `;
+
+            const sent = await sendToTelegram(message);
+            if (!sent) { alert("রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে পরে চেষ্টা করুন।"); return; }
+
+            state.coins -= amount;
+            state.withdrawals.push(withdrawalData);
+            updateUI();
+            form.reset();
+            dom.withdrawModal.classList.remove('show');
+            alert("আপনার উইথড্র অনুরোধ সফলভাবে জমা হয়েছে।");
+        }
+
+        function attachEventListeners() {
+            dom.viewBtns.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
+            dom.viewAd1Btn.addEventListener('click', () => handleAd('ad1'));
+            dom.autoAd1Btn.addEventListener('click', () => toggleAutoAd('ad1'));
+            dom.viewAd2Btn.addEventListener('click', handleAd2);
+            dom.viewAd3Btn.addEventListener('click', () => handleAd('ad3'));
+            dom.autoAd3Btn.addEventListener('click', () => toggleAutoAd('ad3'));
+            dom.withdrawBtn.addEventListener('click', () => dom.withdrawModal.classList.add('show'));
+            dom.closeModalBtn.addEventListener('click', () => dom.withdrawModal.classList.remove('show'));
+            dom.withdrawModal.addEventListener('click', (e) => { if (e.target === dom.withdrawModal) dom.withdrawModal.classList.remove('show'); });
+            dom.withdrawForm.addEventListener('submit', handleWithdraw);
+        }
+    </script>
+</body>
+</html>
