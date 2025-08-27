@@ -141,7 +141,7 @@
             </header>
             <main class="content-area">
                 <div class="card wallet-card">
-                    <div class="label">Your Balance</div>
+                    <div class="label">আপনার ব্যালেন্স</div>
                     <div class="balance"><i class="bi bi-gem balance-icon"></i><span id="balanceDisplay">0</span></div>
                 </div>
 
@@ -345,10 +345,10 @@
                 <h3 class="modal-title">টাকা উত্তোলন</h3>
                 <button id="closeModalBtn" class="modal-close-btn">&times;</button>
             </div>
-            <p style="color: var(--text-light); margin-bottom: 20px;">সর্বনিম্ন উত্তোলন <strong>50,000</strong> কয়েন = <strong>10 BDT</strong></p>
+            <p style="color: var(--text-light); margin-bottom: 20px;">সর্বনিম্ন উত্তোলন <strong>500</strong> কয়েন = <strong>10 BDT</strong></p>
             <form id="withdrawForm">
                 <div class="form-group"><label for="paymentMethod">পেমেন্ট মেথড</label><select id="paymentMethod" required><option value="bKash">বিকাশ</option><option value="Nagad">নগদ</option></select></div>
-                <div class="form-group"><label for="amount">কয়েনের পরিমাণ</label><input type="number" id="amount" placeholder="50000" required></div>
+                <div class="form-group"><label for="amount">কয়েনের পরিমাণ</label><input type="number" id="amount" placeholder="500" required></div>
                 <div class="form-group"><label for="accountNumber">অ্যাকাউন্ট নম্বর</label><input type="text" id="accountNumber" placeholder="017xxxxxxxx" required></div>
                 <button type="submit" class="submit-btn">সাবমিট করুন</button>
             </form>
@@ -375,8 +375,26 @@
     <script src='//libtl.com/sdk.js' data-zone='9750493' data-sdk='show_9750493'></script>
     <script src="https://ad.gigapub.tech/script?id=2221"></script>
     
+    <!-- Alternative Ad Scripts -->
     <script>
-        // --- CONFIGURATION ---
+        // বিকল্প এড স্ক্রিপ্ট
+        if (typeof window.showGiga === 'undefined') {
+            window.showGiga = function() {
+                window.open('https://www.profitableratecpm.com/njf9v72pa?key=d54f51f2eb6b58bc76542f0996052ee9', '_blank');
+                return Promise.resolve();
+            };
+        }
+        
+        if (typeof window.show_9750493 === 'undefined') {
+            window.show_9750493 = function() {
+                window.open('https://www.profitableratecpm.com/njf9v72pa?key=d54f51f2eb6b58bc76542f0996052ee9', '_blank');
+                return Promise.resolve();
+            };
+        }
+    </script>
+    
+    <script>
+        // --- কনফিগারেশন ---
         const CONFIG = {
             TELEGRAM: {
                 BOT_TOKEN: '8209399475:AAEQrA0TbwKRjRuNOAKfb8vchFiyj-m4Bd4', //  <-- আপনার টেলিগ্রাম বট টোকেন দিন
@@ -384,7 +402,14 @@
             },
             AD1: {
                 LIMIT: 500, REWARD: 50, COOLDOWN_MINUTES: 1, COOLDOWN_TRIGGER_COUNT: 5,
-                AUTO_INTERVAL_MS: 2000, AD_FUNCTION: () => window.showGiga ? window.showGiga() : Promise.reject('GigaAd not loaded')
+                AUTO_INTERVAL_MS: 2000, AD_FUNCTION: () => {
+                    if (typeof window.showGiga === 'function') {
+                        window.showGiga();
+                        return Promise.resolve();
+                    } else {
+                        return Promise.reject('GigaAd not loaded');
+                    }
+                }
             },
             AD2: {
                 COOLDOWN_HOURS: 3, REWARD: 300, REWARD_DELAY_MINUTES: 1,
@@ -392,7 +417,14 @@
             },
             AD3: {
                 LIMIT: 50, REWARD: 100, COOLDOWN_MINUTES: 1, COOLDOWN_TRIGGER_COUNT: 5,
-                AUTO_INTERVAL_MS: 3000, AD_FUNCTION: () => window.show_9750493 ? (window.show_9750493(), Promise.resolve()) : Promise.reject('Monetag not loaded')
+                AUTO_INTERVAL_MS: 3000, AD_FUNCTION: () => {
+                    if (typeof window.show_9750493 === 'function') {
+                        window.show_9750493();
+                        return Promise.resolve();
+                    } else {
+                        return Promise.reject('Monetag not loaded');
+                    }
+                }
             },
             MIN_WITHDRAWAL: 500,
             TASKS: {
@@ -426,290 +458,460 @@
             attachEventListeners();
             updateUI();
             startAllCooldownTimers();
+            checkAdScriptsLoaded();
         }
         
+        function checkAdScriptsLoaded() {
+            // এড স্ক্রিপ্ট লোড হয়েছে কিনা তা চেক করা
+            setTimeout(() => {
+                if (typeof window.showGiga !== 'function') {
+                    console.warn('Giga Ad script not loaded properly, using fallback');
+                }
+                if (typeof window.show_9750493 !== 'function') {
+                    console.warn('Monetag Ad script not loaded properly, using fallback');
+                }
+            }, 3000);
+        }
+
         function mapDomElements() {
-            const ids = [
-                'balanceDisplay', 'withdrawModal', 'withdrawBtn', 'closeModalBtn', 'withdrawForm',
-                'ad1CountDisplay', 'ad1Progress', 'ad1CooldownTimer', 'viewAd1Btn', 'autoAd1Btn',
-                'ad2CooldownTimer', 'viewAd2Btn', 'ad3CountDisplay', 'ad3Progress', 'ad3CooldownTimer', 'viewAd3Btn', 'autoAd3Btn',
-                'profilePic', 'profileName', 'profileId', 'taskModal', 'taskModalTitle', 'taskInstructions',
-                'taskLink', 'taskLinkContainer', 'taskTimer', 'verifyTaskBtn', 'closeTaskModalBtn'
-            ];
-            ids.forEach(id => dom[id] = document.getElementById(id));
-            dom.viewBtns = document.querySelectorAll('.view-btn');
+            // View Buttons
+            dom.viewButtons = document.querySelectorAll('.view-btn');
+            
+            // Main View
+            dom.balanceDisplay = document.getElementById('balanceDisplay');
+            
+            // Ad 1
+            dom.ad1CountDisplay = document.getElementById('ad1CountDisplay');
+            dom.ad1Progress = document.getElementById('ad1Progress');
+            dom.viewAd1Btn = document.getElementById('viewAd1Btn');
+            dom.autoAd1Btn = document.getElementById('autoAd1Btn');
+            dom.ad1CooldownTimer = document.getElementById('ad1CooldownTimer');
+            
+            // Ad 2
+            dom.viewAd2Btn = document.getElementById('viewAd2Btn');
+            dom.ad2CooldownTimer = document.getElementById('ad2CooldownTimer');
+            
+            // Ad 3
+            dom.ad3CountDisplay = document.getElementById('ad3CountDisplay');
+            dom.ad3Progress = document.getElementById('ad3Progress');
+            dom.viewAd3Btn = document.getElementById('viewAd3Btn');
+            dom.autoAd3Btn = document.getElementById('autoAd3Btn');
+            dom.ad3CooldownTimer = document.getElementById('ad3CooldownTimer');
+            
+            // Profile
+            dom.profileName = document.getElementById('profileName');
+            dom.profileId = document.getElementById('profileId');
+            dom.profilePic = document.getElementById('profilePic');
+            
+            // Modals
+            dom.withdrawModal = document.getElementById('withdrawModal');
+            dom.withdrawBtn = document.getElementById('withdrawBtn');
+            dom.closeModalBtn = document.getElementById('closeModalBtn');
+            dom.withdrawForm = document.getElementById('withdrawForm');
+            
+            // Task Modal
+            dom.taskModal = document.getElementById('taskModal');
+            dom.taskModalTitle = document.getElementById('taskModalTitle');
+            dom.taskInstructions = document.getElementById('taskInstructions');
+            dom.taskLink = document.getElementById('taskLink');
+            dom.taskLinkContainer = document.getElementById('taskLinkContainer');
+            dom.taskTimer = document.getElementById('taskTimer');
+            dom.verifyTaskBtn = document.getElementById('verifyTaskBtn');
+            dom.closeTaskModalBtn = document.getElementById('closeTaskModalBtn');
+            
+            // Task Buttons
             dom.taskButtons = document.querySelectorAll('.task-btn');
         }
 
-        function getTodayDateString() { return new Date().toISOString().slice(0, 10); }
-
-        function loadState() {
-            try {
-                const savedState = JSON.parse(localStorage.getItem('XEREN_V3_STATE'));
-                if (savedState) {
-                    state = { ...state, ...savedState };
-                    const today = getTodayDateString();
-                    if (state.ad1.lastReset !== today) state.ad1 = { count: 0, cooldownUntil: null, lastReset: today, isAuto: false };
-                    if (state.ad3.lastReset !== today) state.ad3 = { count: 0, cooldownUntil: null, lastReset: today, isAuto: false };
-                }
-            } catch (e) { console.error("Could not load state:", e); }
-        }
-        function saveState() { localStorage.setItem('XEREN_V3_STATE', JSON.stringify(state)); }
-
-        function showView(viewId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-        }
-        
-        function updateUI() {
-            dom.balanceDisplay.textContent = Math.floor(state.coins).toLocaleString();
-            dom.profilePic.src = state.user.photoUrl;
-            dom.profileName.textContent = `${state.user.firstName} ${state.user.lastName}`.trim();
-            dom.profileId.textContent = `ID: ${state.user.id || 'N/A'}`;
-            
-            const updateAdUI = (key, config) => {
-                const adState = state[key];
-                dom[`${key}CountDisplay`].textContent = `${adState.count}/${config.LIMIT}`;
-                dom[`${key}Progress`].style.width = `${(adState.count / config.LIMIT) * 100}%`;
-                dom[`view${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].disabled = adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil);
-                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].textContent = adState.isAuto ? 'Stop Auto' : 'Auto';
-                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].classList.toggle('auto-ad-active', adState.isAuto);
-            };
-            
-            updateAdUI('ad1', CONFIG.AD1);
-            updateAdUI('ad3', CONFIG.AD3);
-            dom.viewAd2Btn.disabled = state.ad2.cooldownUntil && Date.now() < state.ad2.cooldownUntil;
-        }
-
-        function startAllCooldownTimers() {
-            startCooldownTimer('ad1', CONFIG.AD1.COOLDOWN_MINUTES, dom.ad1CooldownTimer, dom.viewAd1Btn);
-            startCooldownTimer('ad2', CONFIG.AD2.COOLDOWN_HOURS * 60, dom.ad2CooldownTimer, dom.viewAd2Btn);
-            startCooldownTimer('ad3', CONFIG.AD3.COOLDOWN_MINUTES, dom.ad3CooldownTimer, dom.viewAd3Btn);
-        }
-
-        function startCooldownTimer(adKey, cooldownMinutes, timerElement, buttonElement) {
-            clearInterval(timers[adKey]);
-            const cooldownUntil = state[adKey].cooldownUntil;
-            if (!cooldownUntil || Date.now() >= cooldownUntil) {
-                timerElement.style.display = 'none';
-                buttonElement.disabled = false;
-                return;
-            }
-            const updateTimer = () => {
-                const remainingMs = cooldownUntil - Date.now();
-                if (remainingMs <= 0) {
-                    clearInterval(timers[adKey]);
-                    timerElement.style.display = 'none';
-                    buttonElement.disabled = false;
-                    state[adKey].cooldownUntil = null;
-                    saveState();
-                    return;
-                }
-                const minutes = Math.floor(remainingMs / 60000);
-                const seconds = Math.floor((remainingMs % 60000) / 1000);
-                timerElement.textContent = `আবার চালু হতে: ${minutes}m ${seconds}s`;
-                timerElement.style.display = 'block';
-                buttonElement.disabled = true;
-            };
-            updateTimer();
-            timers[adKey] = setInterval(updateTimer, 1000);
-        }
-
         function attachEventListeners() {
-            dom.viewBtns.forEach(btn => btn.addEventListener('click', (e) => {
-                const targetView = e.currentTarget.getAttribute('data-view');
-                if (targetView) showView(targetView);
-            }));
+            // View Navigation
+            dom.viewButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetView = e.currentTarget.getAttribute('data-view');
+                    showView(targetView);
+                });
+            });
             
+            // Ad Buttons
+            dom.viewAd1Btn.addEventListener('click', () => viewAd1());
+            dom.autoAd1Btn.addEventListener('click', () => toggleAutoAd1());
+            dom.viewAd2Btn.addEventListener('click', () => viewAd2());
+            dom.viewAd3Btn.addEventListener('click', () => viewAd3());
+            dom.autoAd3Btn.addEventListener('click', () => toggleAutoAd3());
+            
+            // Withdrawal
             dom.withdrawBtn.addEventListener('click', () => dom.withdrawModal.classList.add('show'));
             dom.closeModalBtn.addEventListener('click', () => dom.withdrawModal.classList.remove('show'));
-            dom.closeTaskModalBtn.addEventListener('click', () => dom.taskModal.classList.remove('show'));
-            dom.withdrawModal.addEventListener('click', (e) => { if (e.target === dom.withdrawModal) dom.withdrawModal.classList.remove('show'); });
-            dom.taskModal.addEventListener('click', (e) => { if (e.target === dom.taskModal) dom.taskModal.classList.remove('show'); });
-            
             dom.withdrawForm.addEventListener('submit', handleWithdrawal);
-            dom.viewAd1Btn.addEventListener('click', () => handleAd('ad1', CONFIG.AD1));
-            dom.viewAd3Btn.addEventListener('click', () => handleAd('ad3', CONFIG.AD3));
-            dom.viewAd2Btn.addEventListener('click', handleAd2);
-            dom.autoAd1Btn.addEventListener('click', () => toggleAutoAd('ad1', CONFIG.AD1));
-            dom.autoAd3Btn.addEventListener('click', () => toggleAutoAd('ad3', CONFIG.AD3));
-            dom.taskButtons.forEach(btn => btn.addEventListener('click', (e) => openTaskModal(e.currentTarget.getAttribute('data-task'))));
+            
+            // Task Buttons
+            dom.taskButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const task = e.currentTarget.getAttribute('data-task');
+                    showTaskModal(task);
+                });
+            });
+            
+            // Task Modal
+            dom.closeTaskModalBtn.addEventListener('click', () => dom.taskModal.classList.remove('show'));
             dom.verifyTaskBtn.addEventListener('click', verifyTask);
         }
 
-        function handleAd(adKey, config) {
-            if (state.adInProgress) return;
-            state.adInProgress = true;
-            const adState = state[adKey];
-            if (adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
-                state.adInProgress = false;
-                return;
+        function initTelegramData() {
+            if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+                const user = window.Telegram.WebApp.initDataUnsafe.user;
+                state.user.id = user.id;
+                state.user.firstName = user.first_name || 'User';
+                state.user.lastName = user.last_name || '';
+                state.user.photoUrl = user.photo_url || 'https://i.ibb.co/Q8Q2d6T/avatar.png';
             }
-            config.AD_FUNCTION()
-                .then(() => {
-                    adState.count++;
-                    state.coins += config.REWARD;
-                    if (adState.count % config.COOLDOWN_TRIGGER_COUNT === 0) {
-                        adState.cooldownUntil = Date.now() + (config.COOLDOWN_MINUTES * 60 * 1000);
-                        startCooldownTimer(adKey, config.COOLDOWN_MINUTES, dom[`${adKey}CooldownTimer`], dom[`view${adKey.charAt(0).toUpperCase() + adKey.slice(1)}Btn`]);
-                    }
-                    saveState();
-                    updateUI();
-                    showSuccessMessage(`+${config.REWARD} কয়েন যোগ হয়েছে!`);
-                })
-                .catch(err => {
-                    console.error('Ad error:', err);
-                    showErrorMessage('দুঃখিত, অ্যাডটি লোড হয়নি। পরে আবার চেষ্টা করুন।');
-                })
-                .finally(() => state.adInProgress = false);
+            updateProfileUI();
         }
 
-        function handleAd2() {
-            if (state.adInProgress) return;
-            state.adInProgress = true;
-            const adState = state.ad2;
-            if (adState.cooldownUntil && Date.now() < adState.cooldownUntil) {
-                state.adInProgress = false;
+        function updateProfileUI() {
+            dom.profileName.textContent = `${state.user.firstName} ${state.user.lastName}`;
+            dom.profileId.textContent = `ID: ${state.user.id || 'N/A'}`;
+            dom.profilePic.src = state.user.photoUrl;
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function updateUI() {
+            dom.balanceDisplay.textContent = state.coins.toLocaleString();
+            
+            // Ad 1
+            dom.ad1CountDisplay.textContent = `${state.ad1.count}/${CONFIG.AD1.LIMIT}`;
+            dom.ad1Progress.style.width = `${(state.ad1.count / CONFIG.AD1.LIMIT) * 100}%`;
+            updateAdButtonState(dom.viewAd1Btn, state.ad1.cooldownUntil, state.ad1.count >= CONFIG.AD1.LIMIT);
+            updateAutoButtonState(dom.autoAd1Btn, state.ad1.isAuto);
+            
+            // Ad 2
+            updateAdButtonState(dom.viewAd2Btn, state.ad2.cooldownUntil);
+            
+            // Ad 3
+            dom.ad3CountDisplay.textContent = `${state.ad3.count}/${CONFIG.AD3.LIMIT}`;
+            dom.ad3Progress.style.width = `${(state.ad3.count / CONFIG.AD3.LIMIT) * 100}%`;
+            updateAdButtonState(dom.viewAd3Btn, state.ad3.cooldownUntil, state.ad3.count >= CONFIG.AD3.LIMIT);
+            updateAutoButtonState(dom.autoAd3Btn, state.ad3.isAuto);
+        }
+
+        function updateAdButtonState(button, cooldownUntil, limitReached = false) {
+            if (limitReached) {
+                button.disabled = true;
+                button.textContent = 'Limit Reached';
                 return;
             }
-            window.open(CONFIG.AD2.DIRECT_LINK, '_blank');
-            adState.cooldownUntil = Date.now() + (CONFIG.AD2.COOLDOWN_HOURS * 60 * 60 * 1000);
-            startCooldownTimer('ad2', CONFIG.AD2.COOLDOWN_HOURS * 60, dom.ad2CooldownTimer, dom.viewAd2Btn);
-            setTimeout(() => {
-                state.coins += CONFIG.AD2.REWARD;
+            
+            if (cooldownUntil && new Date() < cooldownUntil) {
+                button.disabled = true;
+                const remaining = Math.ceil((cooldownUntil - new Date()) / 1000);
+                button.textContent = `Wait ${remaining}s`;
+            } else {
+                button.disabled = false;
+                button.innerHTML = '<i class="bi bi-play-circle-fill"></i> দেখুন';
+            }
+        }
+
+        function updateAutoButtonState(button, isAuto) {
+            if (isAuto) {
+                button.classList.add('auto-ad-active');
+                button.innerHTML = '<i class="bi bi-stop-circle"></i> বন্ধ করুন';
+            } else {
+                button.classList.remove('auto-ad-active');
+                button.innerHTML = '<i class="bi bi-robot"></i> অটো';
+            }
+        }
+
+        function startAllCooldownTimers() {
+            startCooldownTimer('ad1', dom.ad1CooldownTimer, dom.viewAd1Btn);
+            startCooldownTimer('ad2', dom.ad2CooldownTimer, dom.viewAd2Btn);
+            startCooldownTimer('ad3', dom.ad3CooldownTimer, dom.viewAd3Btn);
+        }
+
+        function startCooldownTimer(adName, timerElement, button) {
+            clearInterval(timers[adName]);
+            
+            timers[adName] = setInterval(() => {
+                const cooldownUntil = state[adName].cooldownUntil;
+                
+                if (cooldownUntil && new Date() < cooldownUntil) {
+                    const remainingMs = cooldownUntil - new Date();
+                    const remainingSec = Math.ceil(remainingMs / 1000);
+                    
+                    timerElement.style.display = 'block';
+                    timerElement.textContent = `Cooldown: ${remainingSec} seconds remaining`;
+                    
+                    button.disabled = true;
+                    button.textContent = `Wait ${remainingSec}s`;
+                } else {
+                    timerElement.style.display = 'none';
+                    button.disabled = false;
+                    button.innerHTML = '<i class="bi bi-play-circle-fill"></i> দেখুন';
+                    
+                    if (state[adName].count >= CONFIG[adName.toUpperCase()].LIMIT) {
+                        button.disabled = true;
+                        button.textContent = 'Limit Reached';
+                    }
+                }
+                
+                updateUI();
+            }, 1000);
+        }
+
+        async function viewAd1() {
+            if (state.adInProgress) return;
+            state.adInProgress = true;
+            
+            try {
+                await CONFIG.AD1.AD_FUNCTION();
+                await addCoinsWithDelay(CONFIG.AD1.REWARD, 1000);
+                
+                state.ad1.count++;
+                
+                if (state.ad1.count % CONFIG.AD1.COOLDOWN_TRIGGER_COUNT === 0) {
+                    const cooldownUntil = new Date();
+                    cooldownUntil.setMinutes(cooldownUntil.getMinutes() + CONFIG.AD1.COOLDOWN_MINUTES);
+                    state.ad1.cooldownUntil = cooldownUntil;
+                }
+                
                 saveState();
                 updateUI();
-                showSuccessMessage(`+${CONFIG.AD2.REWARD} কয়েন যোগ হয়েছে!`);
+            } catch (error) {
+                console.error('Error viewing ad1:', error);
+                alert('Ad failed to load. Please try again.');
+            } finally {
                 state.adInProgress = false;
-            }, CONFIG.AD2.REWARD_DELAY_MINUTES * 60 * 1000);
+            }
         }
 
-        function toggleAutoAd(adKey, config) {
-            const adState = state[adKey];
-            adState.isAuto = !adState.isAuto;
+        function toggleAutoAd1() {
+            if (state.ad1.isAuto) {
+                state.ad1.isAuto = false;
+                clearInterval(timers.autoAd1);
+            } else {
+                state.ad1.isAuto = true;
+                timers.autoAd1 = setInterval(() => {
+                    if (!state.adInProgress && 
+                        !state.ad1.cooldownUntil && 
+                        state.ad1.count < CONFIG.AD1.LIMIT) {
+                        viewAd1();
+                    }
+                }, CONFIG.AD1.AUTO_INTERVAL_MS);
+            }
+            updateUI();
+        }
+
+        async function viewAd2() {
+            if (state.ad2.cooldownUntil && new Date() < state.ad2.cooldownUntil) return;
+            
+            window.open(CONFIG.AD2.DIRECT_LINK, '_blank');
+            
+            const cooldownUntil = new Date();
+            cooldownUntil.setHours(cooldownUntil.getHours() + CONFIG.AD2.COOLDOWN_HOURS);
+            state.ad2.cooldownUntil = cooldownUntil;
+            
+            setTimeout(() => {
+                addCoins(CONFIG.AD2.REWARD);
+                saveState();
+                updateUI();
+            }, CONFIG.AD2.REWARD_DELAY_MINUTES * 60 * 1000);
+            
             saveState();
             updateUI();
-            if (adState.isAuto) {
-                const interval = setInterval(() => {
-                    if (!adState.isAuto || adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
-                        clearInterval(interval);
-                        adState.isAuto = false;
-                        saveState();
-                        updateUI();
-                        return;
-                    }
-                    handleAd(adKey, config);
-                }, config.AUTO_INTERVAL_MS);
+        }
+
+        async function viewAd3() {
+            if (state.adInProgress) return;
+            state.adInProgress = true;
+            
+            try {
+                await CONFIG.AD3.AD_FUNCTION();
+                await addCoinsWithDelay(CONFIG.AD3.REWARD, 1000);
+                
+                state.ad3.count++;
+                
+                if (state.ad3.count % CONFIG.AD3.COOLDOWN_TRIGGER_COUNT === 0) {
+                    const cooldownUntil = new Date();
+                    cooldownUntil.setMinutes(cooldownUntil.getMinutes() + CONFIG.AD3.COOLDOWN_MINUTES);
+                    state.ad3.cooldownUntil = cooldownUntil;
+                }
+                
+                saveState();
+                updateUI();
+            } catch (error) {
+                console.error('Error viewing ad3:', error);
+                alert('Ad failed to load. Please try again.');
+            } finally {
+                state.adInProgress = false;
             }
         }
 
-        function openTaskModal(taskKey) {
-            if (state.completedTasks[taskKey]) {
-                showInfoMessage('আপনি ইতিমধ্যে এই টাস্কটি সম্পন্ন করেছেন!');
+        function toggleAutoAd3() {
+            if (state.ad3.isAuto) {
+                state.ad3.isAuto = false;
+                clearInterval(timers.autoAd3);
+            } else {
+                state.ad3.isAuto = true;
+                timers.autoAd3 = setInterval(() => {
+                    if (!state.adInProgress && 
+                        !state.ad3.cooldownUntil && 
+                        state.ad3.count < CONFIG.AD3.LIMIT) {
+                        viewAd3();
+                    }
+                }, CONFIG.AD3.AUTO_INTERVAL_MS);
+            }
+            updateUI();
+        }
+
+        function addCoins(amount) {
+            state.coins += amount;
+            updateUI();
+        }
+
+        async function addCoinsWithDelay(amount, delayMs) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    state.coins += amount;
+                    updateUI();
+                    resolve();
+                }, delayMs);
+            });
+        }
+
+        function showTaskModal(task) {
+            if (state.completedTasks[task]) {
+                alert('You have already completed this task.');
                 return;
             }
-            const task = CONFIG.TASKS[taskKey];
-            dom.taskModalTitle.textContent = `${taskKey.charAt(0).toUpperCase() + taskKey.slice(1)} টাস্ক`;
-            dom.taskInstructions.textContent = `দয়া করে নিচের লিঙ্কে ভিজিট করে টাস্কটি সম্পন্ন করুন এবং ৩০ সেকেন্ড অপেক্ষা করুন।`;
-            dom.taskLink.href = task.link;
-            dom.taskLinkContainer.style.display = 'block';
+            
+            const taskConfig = CONFIG.TASKS[task];
+            dom.taskModalTitle.textContent = `Task: ${task.charAt(0).toUpperCase() + task.slice(1)}`;
+            dom.taskInstructions.textContent = `Please visit the link below, complete the task, and wait for 30 seconds.`;
+            dom.taskLink.href = taskConfig.link;
+            dom.taskLink.textContent = taskConfig.link;
+            
+            dom.currentTask = task;
+            dom.taskTimer.textContent = '30';
             dom.verifyTaskBtn.disabled = true;
+            
             dom.taskModal.classList.add('show');
-            dom.currentTaskKey = taskKey;
+            
             let timeLeft = 30;
-            dom.taskTimer.textContent = timeLeft;
             const countdown = setInterval(() => {
                 timeLeft--;
                 dom.taskTimer.textContent = timeLeft;
+                
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     dom.verifyTaskBtn.disabled = false;
                 }
             }, 1000);
+            
+            dom.taskCountdown = countdown;
         }
 
         function verifyTask() {
-            const taskKey = dom.currentTaskKey;
-            const reward = CONFIG.TASKS[taskKey].reward;
-            state.completedTasks[taskKey] = true;
-            state.coins += reward;
-            saveState();
-            updateUI();
+            if (!dom.currentTask) return;
+            
+            const taskConfig = CONFIG.TASKS[dom.currentTask];
+            addCoins(taskConfig.reward);
+            state.completedTasks[dom.currentTask] = true;
+            
             dom.taskModal.classList.remove('show');
-            showSuccessMessage(`টাস্ক সম্পন্ন হয়েছে! +${reward} কয়েন যোগ হয়েছে!`);
+            clearInterval(dom.taskCountdown);
+            
+            saveState();
+            alert(`Task completed! You earned ${taskConfig.reward} coins.`);
         }
 
         function handleWithdrawal(e) {
             e.preventDefault();
-            const amount = parseInt(dom.amount.value);
-            const method = dom.paymentMethod.value;
-            const account = dom.accountNumber.value;
+            
+            const amount = parseInt(document.getElementById('amount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const account = document.getElementById('accountNumber').value;
+            
             if (amount < CONFIG.MIN_WITHDRAWAL) {
-                showErrorMessage(`সর্বনিম্ন উত্তোলন ${CONFIG.MIN_WITHDRAWAL.toLocaleString()} কয়েন`);
+                alert(`Minimum withdrawal is ${CONFIG.MIN_WITHDRAWAL} coins.`);
                 return;
             }
+            
             if (state.coins < amount) {
-                showErrorMessage('আপনার পর্যাপ্ত কয়েন নেই!');
+                alert('Insufficient coins.');
                 return;
             }
-            const withdrawal = { amount, method, account, date: new Date().toISOString() };
+            
+            const withdrawal = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                amount,
+                method,
+                account,
+                status: 'pending'
+            };
+            
             state.withdrawals.push(withdrawal);
             state.coins -= amount;
+            
             saveState();
             updateUI();
+            
             dom.withdrawModal.classList.remove('show');
             dom.withdrawForm.reset();
-            showSuccessMessage('আপনার উত্তোলনের অনুরোধটি সাবমিট হয়েছে। ২৪ ঘন্টার মধ্যে পেমেন্ট করা হবে।');
+            
+            alert('Withdrawal request submitted successfully!');
+            
             if (CONFIG.TELEGRAM.BOT_TOKEN && CONFIG.TELEGRAM.CHAT_ID) {
                 sendTelegramNotification(withdrawal);
             }
         }
 
         function sendTelegramNotification(withdrawal) {
-            const text = `📤 *নতুন উত্তোলনের অনুরোধ*\\n👤 User ID: ${state.user.id || 'N/A'}\\n💰 Amount: ${withdrawal.amount} coins\\n💳 Method: ${withdrawal.method}\\n📱 Account: ${withdrawal.account}`;
-            fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM.BOT_TOKEN}/sendMessage`, {
+            const message = `📤 *New Withdrawal Request*
+            
+👤 User: ${state.user.firstName} ${state.user.lastName}
+🆔 ID: ${state.user.id || 'N/A'}
+            
+💰 Amount: ${withdrawal.amount} coins
+💳 Method: ${withdrawal.method}
+📱 Account: ${withdrawal.account}
+            
+⏰ Date: ${withdrawal.date}
+📊 Status: ${withdrawal.status}`;
+            
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM.BOT_TOKEN}/sendMessage`;
+            
+            fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: CONFIG.TELEGRAM.CHAT_ID,
-                    text: text,
-                    parse_mode: 'MarkdownV2'
+                    text: message,
+                    parse_mode: 'Markdown'
                 })
-            }).catch(err => console.error('Telegram notification error:', err));
+            }).catch(error => console.error('Error sending Telegram notification:', error));
         }
 
-        function initTelegramData() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const webApp = window.Telegram.WebApp;
-                const user = webApp.initDataUnsafe.user;
-                if (user) {
-                    state.user.id = user.id;
-                    state.user.firstName = user.first_name || '';
-                    state.user.lastName = user.last_name || '';
-                    state.user.photoUrl = user.photo_url || state.user.photoUrl;
-                }
-                webApp.expand();
-                webApp.enableClosingConfirmation();
+        function saveState() {
+            localStorage.setItem('earnAppState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('earnAppState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                
+                // Merge with current state to preserve any new properties
+                state = { ...state, ...parsed };
+                
+                // Convert date strings back to Date objects
+                if (state.ad1.cooldownUntil) state.ad1.cooldownUntil = new Date(state.ad1.cooldownUntil);
+                if (state.ad2.cooldownUntil) state.ad2.cooldownUntil = new Date(state.ad2.cooldownUntil);
+                if (state.ad3.cooldownUntil) state.ad3.cooldownUntil = new Date(state.ad3.cooldownUntil);
             }
-        }
-
-        function showSuccessMessage(msg) {
-            showMessage(msg, 'success');
-        }
-        function showErrorMessage(msg) {
-            showMessage(msg, 'error');
-        }
-        function showInfoMessage(msg) {
-            showMessage(msg, 'info');
-        }
-        function showMessage(msg, type) {
-            const toast = document.createElement('div');
-            toast.textContent = msg;
-            toast.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 12px; color: white; font-weight: 600; z-index: 1000; transition: all 0.3s ease;`;
-            toast.style.background = type === 'success' ? 'var(--accent-green)' : type === 'error' ? 'var(--accent-red)' : 'var(--accent-teal)';
-            document.body.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '1'; }, 10);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => document.body.removeChild(toast), 300); }, 3000);
         }
     </script>
 </body>
