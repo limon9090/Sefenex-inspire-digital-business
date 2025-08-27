@@ -24,6 +24,7 @@
             --accent-gold: #FFC947;
             --accent-blush: #E49AB0;
             --accent-red: #FF4D4D;
+            --accent-green: #10B981;
             --bg-gradient: linear-gradient(180deg, #F9FAFB 0%, #F3F5F9 100%);
             --card-bg: #FFFFFF;
             --text-dark: #101828;
@@ -101,6 +102,15 @@
         .developer-card .bio { color: var(--text-light); line-height: 1.6; margin-bottom: 30px; }
         .contact-btn { display: inline-flex; background: var(--accent-teal); color: white; padding: 14px 30px; border-radius: 12px; text-decoration: none; font-weight: 600; box-shadow: var(--button-shadow); }
 
+        /* Tasks View */
+        .task-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .task-item { background: var(--card-bg); border-radius: 16px; padding: 20px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .task-icon { width: 50px; height: 50px; background: var(--accent-teal); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white; font-size: 1.5rem; }
+        .task-details { flex-grow: 1; }
+        .task-title { font-weight: 600; margin-bottom: 5px; }
+        .task-reward { color: var(--accent-green); font-weight: 500; }
+        .task-btn { background: var(--accent-gold); color: var(--primary-sapphire); border: none; padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
         /* Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 36, 99, 0.6); z-index: 1010; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-overlay.show { display: flex; }
@@ -112,6 +122,12 @@
         .form-group label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-light); }
         .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 1rem; background-color: var(--bg-color); }
         .submit-btn { width: 100%; padding: 16px; font-size: 1.1em; font-weight: 600; border: none; border-radius: 14px; cursor: pointer; background: var(--accent-teal); color: white; box-shadow: var(--button-shadow); }
+
+        /* Task Modal */
+        .task-modal-content { max-width: 500px; }
+        .task-timer { text-align: center; font-size: 2rem; font-weight: 700; color: var(--primary-sapphire); margin: 20px 0; }
+        .task-instructions { background: #f7f9fc; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .verify-btn { background: var(--accent-green); color: white; padding: 16px; font-size: 1.1rem; border: none; border-radius: 14px; width: 100%; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -157,6 +173,53 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Tasks Section -->
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; color: var(--primary-sapphire);">টাস্কস</h3>
+                    <div class="task-grid">
+                        <div class="task-item">
+                            <div class="task-icon"><i class="bi bi-youtube"></i></div>
+                            <div class="task-details">
+                                <div class="task-title">YouTube Subscribe</div>
+                                <div class="task-reward">+500 Coins</div>
+                            </div>
+                            <button class="task-btn" data-task="youtube">Go</button>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-icon"><i class="bi bi-facebook"></i></div>
+                            <div class="task-details">
+                                <div class="task-title">Facebook Like</div>
+                                <div class="task-reward">+400 Coins</div>
+                            </div>
+                            <button class="task-btn" data-task="facebook">Go</button>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-icon"><i class="bi bi-telegram"></i></div>
+                            <div class="task-details">
+                                <div class="task-title">Telegram Join</div>
+                                <div class="task-reward">+600 Coins</div>
+                            </div>
+                            <button class="task-btn" data-task="telegram">Go</button>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-icon"><i class="bi bi-instagram"></i></div>
+                            <div class="task-details">
+                                <div class="task-title">Instagram Follow</div>
+                                <div class="task-reward">+450 Coins</div>
+                            </div>
+                            <button class="task-btn" data-task="instagram">Go</button>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-icon"><i class="bi bi-share-fill"></i></div>
+                            <div class="task-details">
+                                <div class="task-title">Share & Earn</div>
+                                <div class="task-reward">+350 Coins</div>
+                            </div>
+                            <button class="task-btn" data-task="share">Go</button>
+                        </div>
+                    </div>
+                </div>
             </main>
             <footer class="app-footer">
                 <div class="developer-credit"><a href="#" data-view="developerView" class="view-btn">Developed by <strong>Hason Raja</strong></a></div>
@@ -178,8 +241,62 @@
                 </div>
                 <div class="list-options">
                     <button id="withdrawBtn" class="list-button"><i class="bi bi-wallet2"></i> টাকা উত্তোলন</button>
+                    <button data-view="tasksView" class="list-button view-btn"><i class="bi bi-list-task"></i> টাস্কস</button>
                     <button data-view="supportView" class="list-button view-btn"><i class="bi bi-headset"></i> সাপোর্ট</button>
                     <button data-view="developerView" class="list-button view-btn"><i class="bi bi-code-slash"></i> ডেভেলপার</button>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Tasks View -->
+        <div id="tasksView" class="view">
+            <header class="app-header">
+                <button data-view="menuView" class="header-btn view-btn"><i class="bi bi-arrow-left"></i></button>
+                <div class="header-title">টাস্কস</div>
+                <div style="width: 44px;"></div>
+            </header>
+            <main class="content-area">
+                <div class="task-grid">
+                    <div class="task-item">
+                        <div class="task-icon"><i class="bi bi-youtube"></i></div>
+                        <div class="task-details">
+                            <div class="task-title">YouTube Subscribe</div>
+                            <div class="task-reward">+500 Coins</div>
+                        </div>
+                        <button class="task-btn" data-task="youtube">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-icon"><i class="bi bi-facebook"></i></div>
+                        <div class="task-details">
+                            <div class="task-title">Facebook Like</div>
+                            <div class="task-reward">+400 Coins</div>
+                        </div>
+                        <button class="task-btn" data-task="facebook">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-icon"><i class="bi bi-telegram"></i></div>
+                        <div class="task-details">
+                            <div class="task-title">Telegram Join</div>
+                            <div class="task-reward">+600 Coins</div>
+                        </div>
+                        <button class="task-btn" data-task="telegram">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-icon"><i class="bi bi-instagram"></i></div>
+                        <div class="task-details">
+                            <div class="task-title">Instagram Follow</div>
+                            <div class="task-reward">+450 Coins</div>
+                        </div>
+                        <button class="task-btn" data-task="instagram">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-icon"><i class="bi bi-share-fill"></i></div>
+                        <div class="task-details">
+                            <div class="task-title">Share & Earn</div>
+                            <div class="task-reward">+350 Coins</div>
+                        </div>
+                        <button class="task-btn" data-task="share">Go</button>
+                    </div>
                 </div>
             </main>
         </div>
@@ -238,9 +355,25 @@
         </div>
     </div>
     
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal-overlay">
+        <div class="modal-content task-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="taskModalTitle">টাস্ক সম্পন্ন করুন</h3>
+                <button class="modal-close-btn" id="closeTaskModalBtn">&times;</button>
+            </div>
+            <div class="task-instructions">
+                <p id="taskInstructions">দয়া করে নিচের লিঙ্কে ভিজিট করে টাস্কটি সম্পন্ন করুন এবং ৩০ সেকেন্ড অপেক্ষা করুন।</p>
+                <p id="taskLinkContainer" style="margin-top: 10px;"><a href="#" id="taskLink" target="_blank" style="color: var(--accent-teal); font-weight: 500;">লিঙ্কে ভিজিট করুন</a></p>
+            </div>
+            <div class="task-timer" id="taskTimer">30</div>
+            <button class="verify-btn" id="verifyTaskBtn" disabled>ভেরিফাই করুন</button>
+        </div>
+    </div>
+    
     <!-- Ad Scripts -->
-    <script src='//jagnaimsee.net/vignette.min.js' data-zone='9504240' data-sdk='show_9504240'></script>
-    <script src="https://ad.gigapub.tech/script?id=2086"></script>
+    <script src='//libtl.com/sdk.js' data-zone='9750493' data-sdk='show_9750493'></script>
+    <script src="https://ad.gigapub.tech/script?id=2221"></script>
     
     <script>
         // --- CONFIGURATION ---
@@ -259,9 +392,16 @@
             },
             AD3: {
                 LIMIT: 50, REWARD: 100, COOLDOWN_MINUTES: 1, COOLDOWN_TRIGGER_COUNT: 5,
-                AUTO_INTERVAL_MS: 3000, AD_FUNCTION: () => window.show_9504240 ? (window.show_9504240(), Promise.resolve()) : Promise.reject('Monetag not loaded')
+                AUTO_INTERVAL_MS: 3000, AD_FUNCTION: () => window.show_9750493 ? (window.show_9750493(), Promise.resolve()) : Promise.reject('Monetag not loaded')
             },
             MIN_WITHDRAWAL: 50000,
+            TASKS: {
+                youtube: { reward: 500, link: 'https://www.youtube.com/channel/UCexample' },
+                facebook: { reward: 400, link: 'https://www.facebook.com/examplepage' },
+                telegram: { reward: 600, link: 'https://t.me/examplechannel' },
+                instagram: { reward: 450, link: 'https://www.instagram.com/exampleprofile' },
+                share: { reward: 350, link: 'https://yourapp.com/share' }
+            }
         };
 
         let state = {
@@ -271,7 +411,8 @@
             ad3: { count: 0, cooldownUntil: null, lastReset: null, isAuto: false },
             user: { id: null, firstName: 'Guest', lastName: '', photoUrl: 'https://i.ibb.co/Q8Q2d6T/avatar.png' },
             adInProgress: false,
-            withdrawals: []
+            withdrawals: [],
+            completedTasks: {}
         };
         const dom = {};
         const timers = {};
@@ -292,10 +433,12 @@
                 'balanceDisplay', 'withdrawModal', 'withdrawBtn', 'closeModalBtn', 'withdrawForm',
                 'ad1CountDisplay', 'ad1Progress', 'ad1CooldownTimer', 'viewAd1Btn', 'autoAd1Btn',
                 'ad2CooldownTimer', 'viewAd2Btn', 'ad3CountDisplay', 'ad3Progress', 'ad3CooldownTimer', 'viewAd3Btn', 'autoAd3Btn',
-                'profilePic', 'profileName', 'profileId'
+                'profilePic', 'profileName', 'profileId', 'taskModal', 'taskModalTitle', 'taskInstructions',
+                'taskLink', 'taskLinkContainer', 'taskTimer', 'verifyTaskBtn', 'closeTaskModalBtn'
             ];
             ids.forEach(id => dom[id] = document.getElementById(id));
             dom.viewBtns = document.querySelectorAll('.view-btn');
+            dom.taskButtons = document.querySelectorAll('.task-btn');
         }
 
         function getTodayDateString() { return new Date().toISOString().slice(0, 10); }
@@ -329,176 +472,244 @@
                 dom[`${key}CountDisplay`].textContent = `${adState.count}/${config.LIMIT}`;
                 dom[`${key}Progress`].style.width = `${(adState.count / config.LIMIT) * 100}%`;
                 dom[`view${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].disabled = adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil);
-                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].disabled = adState.count >= config.LIMIT;
+                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].textContent = adState.isAuto ? 'Stop Auto' : 'Auto';
+                dom[`auto${key.charAt(0).toUpperCase() + key.slice(1)}Btn`].classList.toggle('auto-ad-active', adState.isAuto);
             };
+            
             updateAdUI('ad1', CONFIG.AD1);
             updateAdUI('ad3', CONFIG.AD3);
             dom.viewAd2Btn.disabled = state.ad2.cooldownUntil && Date.now() < state.ad2.cooldownUntil;
-            saveState();
         }
 
-        function initTelegramData() {
-            try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    const tg = window.Telegram.WebApp;
-                    tg.ready(); tg.expand();
-                    const user = tg.initDataUnsafe?.user;
-                    if (user && user.id && !state.user.id) {
-                        state.user = { id: user.id, firstName: user.first_name || 'Guest', lastName: user.last_name || '', photoUrl: user.photo_url || 'https://i.ibb.co/Q8Q2d6T/avatar.png' };
-                        updateUI();
-                    }
-                }
-            } catch (error) { console.error("TG WebApp init failed:", error); }
-        }
-
-        function formatTime(ms) {
-            if (ms <= 0) return "00:00:00";
-            let s = Math.floor(ms / 1000);
-            return `${Math.floor(s/3600).toString().padStart(2,'0')}:${Math.floor((s%3600)/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
-        }
-
-        function startCooldownTimer(timerId, domElement, cooldownUntil) {
-            if (timers[timerId]) clearInterval(timers[timerId]);
-            if (!cooldownUntil || Date.now() > cooldownUntil) { domElement.style.display = 'none'; updateUI(); return; }
-            domElement.style.display = 'block';
-            const update = () => {
-                const timeLeft = cooldownUntil - Date.now();
-                if (timeLeft <= 0) { clearInterval(timers[timerId]); domElement.style.display = 'none'; updateUI(); } 
-                else { domElement.textContent = `অপেক্ষা করুন: ${formatTime(timeLeft)}`; }
-            };
-            update();
-            timers[timerId] = setInterval(update, 1000);
-        }
-        
         function startAllCooldownTimers() {
-            startCooldownTimer('ad1', dom.ad1CooldownTimer, state.ad1.cooldownUntil);
-            startCooldownTimer('ad2', dom.ad2CooldownTimer, state.ad2.cooldownUntil);
-            startCooldownTimer('ad3', dom.ad3CooldownTimer, state.ad3.cooldownUntil);
+            startCooldownTimer('ad1', CONFIG.AD1.COOLDOWN_MINUTES, dom.ad1CooldownTimer, dom.viewAd1Btn);
+            startCooldownTimer('ad2', CONFIG.AD2.COOLDOWN_HOURS * 60, dom.ad2CooldownTimer, dom.viewAd2Btn);
+            startCooldownTimer('ad3', CONFIG.AD3.COOLDOWN_MINUTES, dom.ad3CooldownTimer, dom.viewAd3Btn);
         }
 
-        async function handleAd(adKey) {
-            const config = CONFIG[adKey.toUpperCase()];
-            const adState = state[adKey];
-            if (adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil) || state.adInProgress) return;
-            state.adInProgress = true;
-            try {
-                await config.AD_FUNCTION();
-                state.coins += config.REWARD;
-                adState.count++;
-                if (adState.count % config.COOLDOWN_TRIGGER_COUNT === 0 && adState.count < config.LIMIT) {
-                    adState.cooldownUntil = Date.now() + config.COOLDOWN_MINUTES * 60 * 1000;
-                    startCooldownTimer(adKey, dom[`${adKey}CooldownTimer`], adState.cooldownUntil);
-                    if (adState.isAuto) toggleAutoAd(adKey);
+        function startCooldownTimer(adKey, cooldownMinutes, timerElement, buttonElement) {
+            clearInterval(timers[adKey]);
+            const cooldownUntil = state[adKey].cooldownUntil;
+            if (!cooldownUntil || Date.now() >= cooldownUntil) {
+                timerElement.style.display = 'none';
+                buttonElement.disabled = false;
+                return;
+            }
+            const updateTimer = () => {
+                const remainingMs = cooldownUntil - Date.now();
+                if (remainingMs <= 0) {
+                    clearInterval(timers[adKey]);
+                    timerElement.style.display = 'none';
+                    buttonElement.disabled = false;
+                    state[adKey].cooldownUntil = null;
+                    saveState();
+                    return;
                 }
-            } catch(e) { console.error(`${adKey} failed:`, e); alert(`${adKey} লোড হতে সমস্যা হয়েছে।`); } 
-            finally {
-                state.adInProgress = false; updateUI();
-                if (adState.isAuto && adState.count < config.LIMIT && !(adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
-                    setTimeout(() => handleAd(adKey), config.AUTO_INTERVAL_MS);
-                }
-            }
-        }
-        
-        function handleAd2() {
-            if ((state.ad2.cooldownUntil && Date.now() < state.ad2.cooldownUntil) || state.adInProgress) return;
-            state.adInProgress = true;
-            window.open(CONFIG.AD2.DIRECT_LINK, '_blank');
-            alert(`পুরস্কার পেতে ${CONFIG.AD2.REWARD_DELAY_MINUTES} মিনিট অপেক্ষা করুন।`);
-            setTimeout(() => {
-                state.coins += CONFIG.AD2.REWARD;
-                state.ad2.cooldownUntil = Date.now() + CONFIG.AD2.COOLDOWN_HOURS * 3600 * 1000;
-                state.adInProgress = false;
-                startCooldownTimer('ad2', dom.ad2CooldownTimer, state.ad2.cooldownUntil); updateUI();
-                alert(`অভিনন্দন! আপনি ${CONFIG.AD2.REWARD} কয়েন পেয়েছেন।`);
-            }, CONFIG.AD2.REWARD_DELAY_MINUTES * 60 * 1000);
-        }
-
-        function toggleAutoAd(adKey) {
-            const adState = state[adKey]; adState.isAuto = !adState.isAuto;
-            const btn = dom[`auto${adKey.charAt(0).toUpperCase() + adKey.slice(1)}Btn`];
-            if (adState.isAuto && adState.count < CONFIG[adKey.toUpperCase()].LIMIT) {
-                btn.classList.add('auto-ad-active'); btn.innerHTML = `<i class="bi bi-stop-circle-fill"></i> স্টপ`;
-                handleAd(adKey);
-            } else {
-                adState.isAuto = false; btn.classList.remove('auto-ad-active');
-                btn.innerHTML = `<i class="bi bi-robot"></i> অটো`;
-            }
-        }
-
-        async function sendToTelegram(message) {
-            const { BOT_TOKEN, CHAT_ID } = CONFIG.TELEGRAM;
-            if (!BOT_TOKEN || !CHAT_ID || BOT_TOKEN === 'YOUR_BOT_TOKEN') {
-                console.warn("Telegram bot token/chat ID not configured. Skipping message send.");
-                return true; // Pretend it was sent to allow UI to update
-            }
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'HTML' })
-                });
-                const data = await response.json();
-                return data.ok;
-            } catch (error) {
-                console.error("Failed to send message to Telegram:", error);
-                return false;
-            }
-        }
-
-        async function handleWithdraw(e) {
-            e.preventDefault();
-            const form = e.target;
-            const amount = parseInt(form.amount.value);
-            const method = form.paymentMethod.value;
-            const number = form.accountNumber.value;
-
-            if (isNaN(amount) || amount < CONFIG.MIN_WITHDRAWAL) { alert(`সর্বনিম্ন ${CONFIG.MIN_WITHDRAWAL.toLocaleString()} কয়েন উত্তোলন করা যাবে।`); return; }
-            if (amount > state.coins) { alert("আপনার অ্যাকাউন্টে পর্যাপ্ত কয়েন নেই।"); return; }
-            
-            const withdrawalData = {
-                user: `${state.user.firstName} ${state.user.lastName} (ID: ${state.user.id})`,
-                amount: amount.toLocaleString(),
-                method,
-                number,
-                date: new Date().toLocaleString('bn-BD'),
-                remaining_coins: (state.coins - amount).toLocaleString()
+                const minutes = Math.floor(remainingMs / 60000);
+                const seconds = Math.floor((remainingMs % 60000) / 1000);
+                timerElement.textContent = `আবার চালু হতে: ${minutes}m ${seconds}s`;
+                timerElement.style.display = 'block';
+                buttonElement.disabled = true;
             };
-
-            const message = `
-<b>🔔 নতুন উইথড্র রিকোয়েস্ট! 🔔</b>
---------------------------------------
-<b>🧑‍💻 ব্যবহারকারী:</b> ${withdrawalData.user}
-<b>💰 পরিমাণ:</b> ${withdrawalData.amount} Coin
-<b>💳 মাধ্যম:</b> ${withdrawalData.method}
-<b>#️⃣ নম্বর:</b> <code>${withdrawalData.number}</code>
-<b>🕰️ সময়:</b> ${withdrawalData.date}
-<b>📊 অবশিষ্ট ব্যালেন্স:</b> ${withdrawalData.remaining_coins} Coin
---------------------------------------
-            `;
-
-            const sent = await sendToTelegram(message);
-            if (!sent) { alert("রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে পরে চেষ্টা করুন।"); return; }
-
-            state.coins -= amount;
-            state.withdrawals.push(withdrawalData);
-            updateUI();
-            form.reset();
-            dom.withdrawModal.classList.remove('show');
-            alert("আপনার উইথড্র অনুরোধ সফলভাবে জমা হয়েছে।");
+            updateTimer();
+            timers[adKey] = setInterval(updateTimer, 1000);
         }
 
         function attachEventListeners() {
-            dom.viewBtns.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
-            dom.viewAd1Btn.addEventListener('click', () => handleAd('ad1'));
-            dom.autoAd1Btn.addEventListener('click', () => toggleAutoAd('ad1'));
-            dom.viewAd2Btn.addEventListener('click', handleAd2);
-            dom.viewAd3Btn.addEventListener('click', () => handleAd('ad3'));
-            dom.autoAd3Btn.addEventListener('click', () => toggleAutoAd('ad3'));
+            dom.viewBtns.forEach(btn => btn.addEventListener('click', (e) => {
+                const targetView = e.currentTarget.getAttribute('data-view');
+                if (targetView) showView(targetView);
+            }));
+            
             dom.withdrawBtn.addEventListener('click', () => dom.withdrawModal.classList.add('show'));
             dom.closeModalBtn.addEventListener('click', () => dom.withdrawModal.classList.remove('show'));
+            dom.closeTaskModalBtn.addEventListener('click', () => dom.taskModal.classList.remove('show'));
             dom.withdrawModal.addEventListener('click', (e) => { if (e.target === dom.withdrawModal) dom.withdrawModal.classList.remove('show'); });
-            dom.withdrawForm.addEventListener('submit', handleWithdraw);
+            dom.taskModal.addEventListener('click', (e) => { if (e.target === dom.taskModal) dom.taskModal.classList.remove('show'); });
+            
+            dom.withdrawForm.addEventListener('submit', handleWithdrawal);
+            dom.viewAd1Btn.addEventListener('click', () => handleAd('ad1', CONFIG.AD1));
+            dom.viewAd3Btn.addEventListener('click', () => handleAd('ad3', CONFIG.AD3));
+            dom.viewAd2Btn.addEventListener('click', handleAd2);
+            dom.autoAd1Btn.addEventListener('click', () => toggleAutoAd('ad1', CONFIG.AD1));
+            dom.autoAd3Btn.addEventListener('click', () => toggleAutoAd('ad3', CONFIG.AD3));
+            dom.taskButtons.forEach(btn => btn.addEventListener('click', (e) => openTaskModal(e.currentTarget.getAttribute('data-task'))));
+            dom.verifyTaskBtn.addEventListener('click', verifyTask);
+        }
+
+        function handleAd(adKey, config) {
+            if (state.adInProgress) return;
+            state.adInProgress = true;
+            const adState = state[adKey];
+            if (adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
+                state.adInProgress = false;
+                return;
+            }
+            config.AD_FUNCTION()
+                .then(() => {
+                    adState.count++;
+                    state.coins += config.REWARD;
+                    if (adState.count % config.COOLDOWN_TRIGGER_COUNT === 0) {
+                        adState.cooldownUntil = Date.now() + (config.COOLDOWN_MINUTES * 60 * 1000);
+                        startCooldownTimer(adKey, config.COOLDOWN_MINUTES, dom[`${adKey}CooldownTimer`], dom[`view${adKey.charAt(0).toUpperCase() + adKey.slice(1)}Btn`]);
+                    }
+                    saveState();
+                    updateUI();
+                    showSuccessMessage(`+${config.REWARD} কয়েন যোগ হয়েছে!`);
+                })
+                .catch(err => {
+                    console.error('Ad error:', err);
+                    showErrorMessage('দুঃখিত, অ্যাডটি লোড হয়নি। পরে আবার চেষ্টা করুন।');
+                })
+                .finally(() => state.adInProgress = false);
+        }
+
+        function handleAd2() {
+            if (state.adInProgress) return;
+            state.adInProgress = true;
+            const adState = state.ad2;
+            if (adState.cooldownUntil && Date.now() < adState.cooldownUntil) {
+                state.adInProgress = false;
+                return;
+            }
+            window.open(CONFIG.AD2.DIRECT_LINK, '_blank');
+            adState.cooldownUntil = Date.now() + (CONFIG.AD2.COOLDOWN_HOURS * 60 * 60 * 1000);
+            startCooldownTimer('ad2', CONFIG.AD2.COOLDOWN_HOURS * 60, dom.ad2CooldownTimer, dom.viewAd2Btn);
+            setTimeout(() => {
+                state.coins += CONFIG.AD2.REWARD;
+                saveState();
+                updateUI();
+                showSuccessMessage(`+${CONFIG.AD2.REWARD} কয়েন যোগ হয়েছে!`);
+                state.adInProgress = false;
+            }, CONFIG.AD2.REWARD_DELAY_MINUTES * 60 * 1000);
+        }
+
+        function toggleAutoAd(adKey, config) {
+            const adState = state[adKey];
+            adState.isAuto = !adState.isAuto;
+            saveState();
+            updateUI();
+            if (adState.isAuto) {
+                const interval = setInterval(() => {
+                    if (!adState.isAuto || adState.count >= config.LIMIT || (adState.cooldownUntil && Date.now() < adState.cooldownUntil)) {
+                        clearInterval(interval);
+                        adState.isAuto = false;
+                        saveState();
+                        updateUI();
+                        return;
+                    }
+                    handleAd(adKey, config);
+                }, config.AUTO_INTERVAL_MS);
+            }
+        }
+
+        function openTaskModal(taskKey) {
+            if (state.completedTasks[taskKey]) {
+                showInfoMessage('আপনি ইতিমধ্যে এই টাস্কটি সম্পন্ন করেছেন!');
+                return;
+            }
+            const task = CONFIG.TASKS[taskKey];
+            dom.taskModalTitle.textContent = `${taskKey.charAt(0).toUpperCase() + taskKey.slice(1)} টাস্ক`;
+            dom.taskInstructions.textContent = `দয়া করে নিচের লিঙ্কে ভিজিট করে টাস্কটি সম্পন্ন করুন এবং ৩০ সেকেন্ড অপেক্ষা করুন।`;
+            dom.taskLink.href = task.link;
+            dom.taskLinkContainer.style.display = 'block';
+            dom.verifyTaskBtn.disabled = true;
+            dom.taskModal.classList.add('show');
+            dom.currentTaskKey = taskKey;
+            let timeLeft = 30;
+            dom.taskTimer.textContent = timeLeft;
+            const countdown = setInterval(() => {
+                timeLeft--;
+                dom.taskTimer.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    dom.verifyTaskBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function verifyTask() {
+            const taskKey = dom.currentTaskKey;
+            const reward = CONFIG.TASKS[taskKey].reward;
+            state.completedTasks[taskKey] = true;
+            state.coins += reward;
+            saveState();
+            updateUI();
+            dom.taskModal.classList.remove('show');
+            showSuccessMessage(`টাস্ক সম্পন্ন হয়েছে! +${reward} কয়েন যোগ হয়েছে!`);
+        }
+
+        function handleWithdrawal(e) {
+            e.preventDefault();
+            const amount = parseInt(dom.amount.value);
+            const method = dom.paymentMethod.value;
+            const account = dom.accountNumber.value;
+            if (amount < CONFIG.MIN_WITHDRAWAL) {
+                showErrorMessage(`সর্বনিম্ন উত্তোলন ${CONFIG.MIN_WITHDRAWAL.toLocaleString()} কয়েন`);
+                return;
+            }
+            if (state.coins < amount) {
+                showErrorMessage('আপনার পর্যাপ্ত কয়েন নেই!');
+                return;
+            }
+            const withdrawal = { amount, method, account, date: new Date().toISOString() };
+            state.withdrawals.push(withdrawal);
+            state.coins -= amount;
+            saveState();
+            updateUI();
+            dom.withdrawModal.classList.remove('show');
+            dom.withdrawForm.reset();
+            showSuccessMessage('আপনার উত্তোলনের অনুরোধটি সাবমিট হয়েছে। ২৪ ঘন্টার মধ্যে পেমেন্ট করা হবে।');
+            if (CONFIG.TELEGRAM.BOT_TOKEN && CONFIG.TELEGRAM.CHAT_ID) {
+                sendTelegramNotification(withdrawal);
+            }
+        }
+
+        function sendTelegramNotification(withdrawal) {
+            const text = `📤 *নতুন উত্তোলনের অনুরোধ*\\n👤 User ID: ${state.user.id || 'N/A'}\\n💰 Amount: ${withdrawal.amount} coins\\n💳 Method: ${withdrawal.method}\\n📱 Account: ${withdrawal.account}`;
+            fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM.BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CONFIG.TELEGRAM.CHAT_ID,
+                    text: text,
+                    parse_mode: 'MarkdownV2'
+                })
+            }).catch(err => console.error('Telegram notification error:', err));
+        }
+
+        function initTelegramData() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const webApp = window.Telegram.WebApp;
+                const user = webApp.initDataUnsafe.user;
+                if (user) {
+                    state.user.id = user.id;
+                    state.user.firstName = user.first_name || '';
+                    state.user.lastName = user.last_name || '';
+                    state.user.photoUrl = user.photo_url || state.user.photoUrl;
+                }
+                webApp.expand();
+                webApp.enableClosingConfirmation();
+            }
+        }
+
+        function showSuccessMessage(msg) {
+            showMessage(msg, 'success');
+        }
+        function showErrorMessage(msg) {
+            showMessage(msg, 'error');
+        }
+        function showInfoMessage(msg) {
+            showMessage(msg, 'info');
+        }
+        function showMessage(msg, type) {
+            const toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 12px; color: white; font-weight: 600; z-index: 1000; transition: all 0.3s ease;`;
+            toast.style.background = type === 'success' ? 'var(--accent-green)' : type === 'error' ? 'var(--accent-red)' : 'var(--accent-teal)';
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '1'; }, 10);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => document.body.removeChild(toast), 300); }, 3000);
         }
     </script>
 </body>
